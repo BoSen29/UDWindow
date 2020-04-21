@@ -9,6 +9,8 @@ class UDDrag extends React.Component {
     super(props);
     this.state = {
       hidden: false,
+      minimized: false,
+      disabled: this.props.disabled
     }
   }
 
@@ -35,6 +37,7 @@ class UDDrag extends React.Component {
     else if (event.type === "removeElement") {
       this.setState({
         hidden: true,
+        minimized: false,
       });
     }
   }
@@ -53,18 +56,30 @@ class UDDrag extends React.Component {
         return UniversalDashboard.renderComponent(x);
       });
       const mystyle = {
-        border: "5px dashed #1C6EA4",
         position: "absolute",
-        'padding-left': "10px",
-        'padding-right': "10px",
-        'border-radius': "12px 12px 12px 12px",
-        'background-color': "#f7f7f7",
-        '-webkit-box-shadow': "7px 8px 10px 1px rgba(0,0,0,0.61)",
-        'box-shadow': "7px 8px 10px 1px rgba(0,0,0,0.61)"
       };
-      const imgstyle = {
-        'border-radius': "12px"
-      };
+      const buttonStyle = {
+          'pull': 'right',
+          'float': 'right'
+      }
+      const RedButton = {
+          'background-color': 'red',
+          'color': 'white',
+          'height': '24px',
+          'width' : '24px',
+          'border': 'none',
+          'border-radius': '3px',
+          'font-size': '18px'
+      }
+      const YellowButton = {
+          'background-color': 'orange',
+          'color': 'white',
+          'height': '24px',
+          'width' : '24px',
+          'border': 'none',
+          'border-radius': '3px',
+          'font-size': '18px'
+      }
       return (
         <Draggable
           axis="both"
@@ -75,11 +90,29 @@ class UDDrag extends React.Component {
           scale={1}
           onStart={this.handleStart}
           onDrag={this.handleDrag}
-          onStop={this.handleStop}>
+          onStop={this.handleStop}
+          disabled={this.props.disabled}>
           <div className="box" style={mystyle}>
-            <h5 style={{ 'text-align': "center" }}>{this.props.title}</h5>
-            <p>{this.props.text}</p>
-            {content}
+            <div className="card ud-card">
+                <div className="card-title left-align">
+                    <span>
+                        {this.props.title}
+                    </span>
+                    <span style={buttonStyle}>
+                        {this.state.minimized === true ? 
+                            <button onClick={() => this.setState({minimized:false})} style={YellowButton}>O</button>
+                            :
+                            <button onClick={() => this.setState({minimized:true})} style={YellowButton}>_</button>
+                        }
+                        
+                        <button onClick={() => this.setState({hidden:true})} style={RedButton}>X</button>
+                    </span>
+                </div>
+                {this.state.minimized === false ? <div className="card-content">
+                    {content}
+                </div>
+                : ""}
+            </div>
           </div>
         </Draggable>
       );
