@@ -10,6 +10,12 @@ class UDDrag extends React.Component {
     this.state = {
       hidden: false,
       minimized: false,
+      disabled: this.props.disabled,
+      screenHeight: 0,
+      screenWidth: 0,
+      pos: null,
+      x: this.props.x,
+      y: this.props.y,
       disabled: this.props.disabled
     }
   }
@@ -20,6 +26,16 @@ class UDDrag extends React.Component {
 
   componentWillUnmount() {
     PubSub.unsubscribe(this.pubSubToken);
+    window.removeEventListener('resize', this.updateWindowDimensions);
+  }
+
+  componentDidMount() {
+    this.updateWindowDimensions();
+    window.addEventListener('resize', this.updateWindowDimensions);
+  }
+
+  updateWindowDimensions() {
+    this.setState({ screenWidth: window.innerWidth, screenHeight: window.innerHeight });
   }
 
   onIncomingEvent(eventName, event) {
@@ -40,6 +56,36 @@ class UDDrag extends React.Component {
         minimized: false,
       });
     }
+  }
+
+  minimizeHandler() {
+    console.log("PositionY", this.state.lastY);
+    console.log("PositionX", this.state.lastX);
+    console.log("Position", this.state.pos);
+    console.log("ScreenHeight", this.state.screenHeight);
+    console.log("ScreenWidth", this.state.screenWidth);
+    var newX = 50
+    var newY = 0
+    this.setState({
+        pos: {
+            x: newX,
+            y: newY 
+        },
+        disabled: true
+    })
+    this.setState({minimized:true})
+  }
+  closeHandler() {
+    this.setState({hidden:true})
+  }
+  reOpenHandler() {
+    this.setState({
+        pos: null,
+        x: 0,
+        y: 0,
+        disabled: false
+    })
+    this.setState({minimized:false})
   }
 
   render() {
@@ -84,14 +130,15 @@ class UDDrag extends React.Component {
         <Draggable
           axis="both"
           handle=".box"
-          defaultPosition={{ x: this.props.x, y: this.props.y }}
-          position={null}
-          grid={[5, 5]}
+          defaultPosition={{ x: this.state.x, y: this.state.y }}
+          position={this.state.pos}
+          grid={[25, 25]}
           scale={1}
           onStart={this.handleStart}
           onDrag={this.handleDrag}
           onStop={this.handleStop}
-          disabled={this.props.disabled}>
+          disabled={this.state.disabled}
+          offsetParent={document.body}>
           <div className="box" style={mystyle}>
             <div className="card ud-card">
                 <div className="card-title left-align">
@@ -100,12 +147,12 @@ class UDDrag extends React.Component {
                     </span>
                     <span style={buttonStyle}>
                         {this.state.minimized === true ? 
-                            <button onClick={() => this.setState({minimized:false})} style={YellowButton}>O</button>
+                            <button onClick={() => this.reOpenHandler()} style={YellowButton}>O</button>
                             :
-                            <button onClick={() => this.setState({minimized:true})} style={YellowButton}>_</button>
+                            <button onClick={() => this.minimizeHandler()} style={YellowButton}>_</button>
                         }
                         
-                        <button onClick={() => this.setState({hidden:true})} style={RedButton}>X</button>
+                        <button onClick={() => this.closeHandler()} style={RedButton}>X</button>
                     </span>
                 </div>
                 {this.state.minimized === false ? <div className="card-content">
