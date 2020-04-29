@@ -3,7 +3,7 @@ import ReactDOM from 'react-dom';
 import Draggable from 'react-draggable';
 
 
-class UDDrag extends React.Component {
+class UDWindow extends React.Component {
 
   constructor(props) {
     super(props);
@@ -66,7 +66,6 @@ class UDDrag extends React.Component {
     else if (event.type === "removeElement") {
       this.setState({
         hidden: true,
-        minimized: false,
       });
     }
   }
@@ -227,4 +226,4 @@ class UDDrag extends React.Component {
   }
 }
 
-export default UDDrag
+export default UDWindow

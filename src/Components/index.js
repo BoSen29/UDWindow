@@ -1,2 +1,2 @@
-import UDDrag from './UDDrag';
-UniversalDashboard.register("UD-Drag", UDDrag);
+import UDWindow from './UDWindow';
+UniversalDashboard.register("UD-Window", UDWindow);
