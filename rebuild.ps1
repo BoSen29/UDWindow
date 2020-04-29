@@ -4,4 +4,4 @@ Remove-Module UniversalDashboard.UDWindow -ErrorAction SilentlyContinue
 
 & .\build.ps1
 
-& .\dashtest.ps1
+& .\demodash.ps1
